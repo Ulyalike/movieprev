@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieCatalog | Каталог фильмов на React</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --secondary-color: #10b981;
+            --accent-color: #f59e0b;
+            --error-color: #ef4444;
+            --light-color: #f8fafc;
+            --light-gray: #f1f5f9;
+            --gray: #94a3b8;
+            --dark-gray: #64748b;
+            --dark-color: #1e293b;
+            --text-color: #334155;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-color);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-size: 1.8rem;
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #0ea271;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+            font-size: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            cursor: pointer;
+        }
+
+        .hero {
+            padding: 10rem 0 6rem;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e0f2fe 100%);
+            overflow: hidden;
+        }
+
+        .hero-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .hero-text {
+            flex: 1;
+            padding-right: 2rem;
+        }
+
+        .hero-image {
+            flex: 1;
+            position: relative;
+        }
+
+        .hero-image img {
+            max-width: 100%;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            transform: perspective(1000px) rotateY(-15deg);
+            transition: var(--transition);
+        }
+
+        .hero-image img:hover {
+            transform: perspective(1000px) rotateY(0deg);
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .problems {
+            padding: 6rem 0;
+            background-color: white;
+        }
+
+        .problems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .problem-card {
+            background-color: var(--light-color);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--error-color);
+            transition: var(--transition);
+        }
+
+        .problem-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .problem-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background-color: rgba(239, 68, 68, 0.1);
+            border-radius: 50%;
+            margin-bottom: 1.5rem;
+            color: var(--error-color);
+            font-size: 1.5rem;
+        }
+
+        .advantages {
+            padding: 6rem 0;
+            background-color: var(--light-gray);
+        }
+
+        .advantages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .advantage-card {
+            background-color: white;
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--secondary-color);
+            transition: var(--transition);
+        }
+
+        .advantage-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .advantage-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background-color: rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+        }
+
+        .features {
+            padding: 6rem 0;
+            background-color: white;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2:after {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background-color: var(--light-color);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+            border-radius: 50%;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-size: 1.8rem;
+        }
+
+        .scenarios {
+            padding: 6rem 0;
+            background-color: var(--light-gray);
+        }
+
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .scenario-card {
+            background-color: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+        }
+
+        .scenario-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .scenario-header {
+            padding: 2rem 2rem 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+        }
+
+        .scenario-header h3 {
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .scenario-avatar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .scenario-avatar-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-right: 1rem;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .scenario-content {
+            padding: 2rem;
+        }
+
+        .scenario-step {
+            display: flex;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .scenario-step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            height: 40px;
+            background-color: var(--primary-light);
+            color: white;
+            border-radius: 50%;
+            font-weight: 700;
+            margin-right: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .step-content h4 {
+            margin-bottom: 0.5rem;
+            color: var(--primary-dark);
+        }
+
+        .tech-stack {
+            padding: 6rem 0;
+            background-color: var(--light-gray);
+        }
+
+        .tech-icons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .tech-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .tech-icon:hover {
+            transform: translateY(-10px);
+        }
+
+        .tech-icon i {
+            font-size: 3.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-icon span {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .comparison {
+            padding: 6rem 0;
+            background-color: white;
+        }
+
+        .comparison-table {
+            overflow-x: auto;
+            margin-top: 3rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.2rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 1.2rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--light-gray);
+        }
+
+        .check {
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        .cross {
+            color: var(--error-color);
+            font-weight: bold;
+        }
+
+        .timeline {
+            padding: 6rem 0;
+            background-color: var(--light-gray);
+        }
+
+        .timeline-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline-container:before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            margin-bottom: 3rem;
+            position: relative;
+            width: 45%;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 55%;
+        }
+
+        .timeline-content {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .timeline-date {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            border: 4px solid var(--light-gray);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-dot {
+            right: -12px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: -12px;
+        }
+
+        .cta {
+            padding: 6rem 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            text-align: center;
+        }
+
+        .cta h2, .cta p {
+            color: white;
+        }
+
+        .cta h2:after {
+            background: white;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .cta .btn {
+            background-color: white;
+            color: var(--primary-color);
+            margin-top: 2rem;
+        }
+
+        .cta .btn:hover {
+            background-color: var(--light-gray);
+        }
+
+        footer {
+            background-color: var(--dark-color);
+            color: var(--light-gray);
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 2rem;
+            padding-right: 1.5rem;
+        }
+
+        .footer-column h3 {
+            color: white;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .social-icons a:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 992px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            h2 {
+                font-size: 2.2rem;
+            }
+            
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .hero-text {
+                padding-right: 0;
+                margin-bottom: 3rem;
+            }
+            
+            .hero-btns {
+                justify-content: center;
+            }
+            
+            .scenarios-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .timeline-container:before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                left: 0 !important;
+                padding-left: 70px;
+            }
+            
+            .timeline-dot {
+                left: 21px !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem 0;
+            }
+            
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: white;
+                flex-direction: column;
+                padding: 1rem 0;
+                box-shadow: var(--shadow);
+                text-align: center;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .nav-links li {
+                margin: 0.8rem 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero {
+                padding: 8rem 0 4rem;
+            }
+            
+            .hero-btns {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .scenarios-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .scenario-card {
+                margin-bottom: 1.5rem;
+            }
+            
+            .tech-icons {
+                gap: 1.5rem;
+            }
+            
+            .tech-icon i {
+                font-size: 2.8rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .feature-card, .problem-card, .advantage-card, .scenario-card {
+                padding: 1.5rem;
+            }
+            
+            .scenarios-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .scenario-step {
+                flex-direction: column;
+            }
+            
+            .step-number {
+                margin-bottom: 0.5rem;
+            }
+            
+            .footer-column {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="#" class="logo">
+                    <i class="fas fa-film"></i>
+                    MovieCatalog
+                </a>
+                
+                <ul class="nav-links">
+                    <li><a href="#home">Главная</a></li>
+                    <li><a href="#problems">Проблемы</a></li>
+                    <li><a href="#advantages">Преимущества</a></li>
+                    <li><a href="#features">Возможности</a></li>
+                    <li><a href="#scenarios">Сценарии</a></li>
+                    <li><a href="#comparison">Сравнение</a></li>
+                    <li><a href="#timeline">Этапы</a></li>
+                </ul>
+                
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Современный каталог фильмов на React</h1>
+                    <p>MovieCatalog — это полнофункциональное React-приложение для поиска, фильтрации и сохранения информации о фильмах. Проект демонстрирует использование современных веб-технологий для создания отзывчивого пользовательского интерфейса.</p>
+                    <div class="hero-btns">
+                        <a href="#problems" class="btn">Узнать о проблемах</a>
+                        <a href="#features" class="btn btn-outline">Функции проекта</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Кино и попкорн">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="problems" id="problems">
+        <div class="container">
+            <div class="section-title">
+                <h2>Проблемы в современных проектах</h2>
+                <p>Типичные сложности при создании учебных и коммерческих каталогов</p>
+            </div>
+            
+            <div class="problems-grid">
+                <div class="problem-card">
+                    <div class="problem-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>Сложность управления состоянием</h3>
+                    <p>Без правильной архитектуры состояние приложения (избранное, история поиска) становится сложно синхронизировать между компонентами, что ведет к багам.</p>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <h3>Оптимизация производительности</h3>
+                    <p>Неоптимизированные запросы к API, отсутствие пагинации и кэширования приводят к медленной работе, особенно при отображении большого количества фильмов.</p>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Адаптивная верстка</h3>
+                    <p>Создание интерфейса, который одинаково хорошо выглядит на всех устройствах, требует глубокого знания CSS и тщательного тестирования.</p>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon">
+                        <i class="fas fa-filter"></i>
+                    </div>
+                    <h3>Реализация сложной фильтрации</h3>
+                    <p>Разработка удобной системы фильтрации по нескольким критериям (жанр, год, рейтинг) с сохранением состояния и сбросом параметров.</p>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3>Качество и поддерживаемость кода</h3>
+                    <p>Отсутствие TypeScript, единого стиля кода и модульной структуры затрудняет чтение, тестирование и развитие проекта.</p>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Работа с внешним API</h3>
+                    <p>Обработка ошибок сети, управление загрузкой, пагинация и обновление данных при изменении параметров запроса.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="advantages" id="advantages">
+        <div class="container">
+            <div class="section-title">
+                <h2>Технические решения проекта</h2>
+                <p>Как MovieCatalog решает типичные проблемы веб-разработки</p>
+            </div>
+            
+            <div class="advantages-grid">
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Эффективное управление состоянием</h3>
+                    <p>Использование Redux Toolkit для централизованного и предсказуемого управления состоянием приложения (избранное, параметры поиска, данные фильмов).</p>
+                </div>
+                
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                    <h3>Модульный CSS</h3>
+                    <p>Применение CSS Modules для изоляции стилей компонентов, что предотвращает конфликты и упрощает поддержку.</p>
+                </div>
+                
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <i class="fas fa-search-plus"></i>
+                    </div>
+                    <h3>Гибкая система фильтрации</h3>
+                    <p>Реализация фильтров с использованием query-параметров URL, что позволяет сохранять и передавать состояние поиска.</p>
+                </div>
+                
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <h3>Оптимизация запросов</h3>
+                    <p>Дебаунсинг поисковых запросов, кэширование ответов API и пагинация для снижения нагрузки и повышения скорости.</p>
+                </div>
+                
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>Полная типизация</h3>
+                    <p>Проект написан на TypeScript, что обеспечивает безопасность типов, автодополнение и сокращает количество runtime-ошибок.</p>
+                </div>
+                
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3>Чистая архитектура</h3>
+                    <p>Разделение на компоненты, хуки, сервисы и хранилище, что делает код читаемым, тестируемым и расширяемым.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Ключевые функции</h2>
+                <p>Реализованные возможности в соответствии с учебным заданием</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-film"></i>
+                    </div>
+                    <h3>Главная страница с фильмами</h3>
+                    <p>Сетка фильмов с постером, названием, рейтингом и годом выпуска. Загрузка данных из The Movie Database (TMDB) API.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>Поиск и фильтрация</h3>
+                    <p>Поиск по названию и фильтрация по жанрам. Динамическое обновление результатов без перезагрузки страницы.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Избранное</h3>
+                    <p>Добавление и удаление фильмов из избранного. Состояние сохраняется между сессиями с использованием локального хранилища.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <h3>Детальная страница фильма</h3>
+                    <p>Отдельная страница с полной информацией: описание, актерский состав, бюджет, сборы, продолжительность и трейлер.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Адаптивный дизайн</h3>
+                    <p>Приложение корректно отображается на устройствах с разным размером экрана благодаря использованию CSS Grid и Flexbox.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-vial"></i>
+                    </div>
+                    <h3>Набор тестов</h3>
+                    <p>Unit-тесты для критических функций и компонентов с использованием Jest и React Testing Library.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="scenarios" id="scenarios">
+        <div class="container">
+            <div class="section-title">
+                <h2>Пользовательские сценарии</h2>
+                <p>Типичные пути взаимодействия с приложением</p>
+            </div>
+            
+            <div class="scenarios-grid">
+                <div class="scenario-card">
+                    <div class="scenario-header">
+                        <div class="scenario-avatar">
+                            <div class="scenario-avatar-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div>
+                                <h3>Пользователь: Анна</h3>
+                                <p>Поиск фильма по жанру и добавление в избранное</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="scenario-content">
+                        <div class="scenario-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Открытие главной страницы</h4>
+                                <p>Анна открывает MovieCatalog. Она видит сетку популярных фильмов, загруженных с TMDB API.</p>
+                            </div>
+                        </div>
+                        <div class="scenario-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Фильтрация по жанру</h4>
+                                <p>В сайдбаре она выбирает жанр "Фантастика" и устанавливает минимальный рейтинг 7.0. Список фильмов мгновенно обновляется.</p>
+                            </div>
+                        </div>
+                        <div class="scenario-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Просмотр деталей</h4>
+                                <p>Анна кликает на понравившийся фильм, чтобы перейти на его детальную страницу и посмотреть трейлер.</p>
+                            </div>
+                        </div>
+                        <div class="scenario-step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>Добавление в избранное</h4>
+                                <p>На странице фильма она нажимает кнопку "В избранное". Фильм добавляется в её персональную коллекцию.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scenario-card">
+                    <div class="scenario-header">
+                        <div class="scenario-avatar">
+                            <div class="scenario-avatar-icon">
+                                <i class="fas fa-film"></i>
+                            </div>
+                            <div>
+                                <h3>Киноман: Дмитрий</h3>
+                                <p>Создание персональной коллекции и просмотр истории</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="scenario-content">
+                        <div class="scenario-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Поиск по ключевому слову</h4>
+                                <p>Дмитрий вводит в поисковую строку "космос". Приложение в реальном времени показывает фильмы, соответствующие запросу.</p>
+                            </div>
+                        </div>
+                        <div class="scenario-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Сортировка результатов</h4>
+                                <p>Он сортирует результаты по году выпуска (от новых к старым), чтобы увидеть последние релизы.</p>
+                            </div>
+                        </div>
+                        <div class="scenario-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Создание коллекции</h4>
+                                <p>Дмитрий добавляет несколько фильмов в избранное, создавая тематическую коллекцию "Космическая фантастика".</p>
+                            </div>
+                        </div>
+                        <div class="scenario-step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>Просмотр избранного</h4>
+                                <p>Он переходит на вкладку "Избранное", где видит все сохранённые фильмы. Состояние сохраняется даже после закрытия браузера.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="comparison" id="comparison">
+        <div class="container">
+            <div class="section-title">
+                <h2>Сравнение подходов</h2>
+                <p>Различия между базовой и улучшенной реализацией учебного проекта</p>
+            </div>
+            
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Критерий</th>
+                            <th>MovieCatalog (с улучшениями)</th>
+                            <th>Базовая реализация</th>
+                            <th>Коммерческий аналог (Kinopoisk)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Управление состоянием</td>
+                            <td class="check">Redux Toolkit (централизованное)</td>
+                            <td>Локальный state, пропсы</td>
+                            <td>Проприетарное решение</td>
+                        </tr>
+                        <tr>
+                            <td>Типизация</td>
+                            <td class="check">TypeScript (полная)</td>
+                            <td class="cross">JavaScript (частичная)</td>
+                            <td>TypeScript</td>
+                        </tr>
+                        <tr>
+                            <td>Стилизация</td>
+                            <td class="check">CSS Modules / SCSS</td>
+                            <td>Глобальный CSS</td>
+                            <td>CSS-in-JS / модули</td>
+                        </tr>
+                        <tr>
+                            <td>Работа с API</td>
+                            <td class="check">RTK Query, кэширование</td>
+                            <td>Нативный fetch/axios</td>
+                            <td>ГрафQL / REST</td>
+                        </tr>
+                        <tr>
+                            <td>Маршрутизация</td>
+                            <td class="check">React Router v6</td>
+                            <td>React Router v5</td>
+                            <td>Проприетарный роутер</td>
+                        </tr>
+                        <tr>
+                            <td>Тестирование</td>
+                            <td class="check">Jest + RTL (компоненты, логика)</td>
+                            <td>Базовые снепшот-тесты</td>
+                            <td>Полный набор (unit, e2e)</td>
+                        </tr>
+                        <tr>
+                            <td>Адаптивность</td>
+                            <td class="check">Mobile-first, Grid/Flexbox</td>
+                            <td>Базовая адаптивность</td>
+                            <td class="check">Идеальная</td>
+                        </tr>
+                        <tr>
+                            <td>Оптимизация</td>
+                            <td class="check">Ленивая загрузка, дебаунсинг</td>
+                            <td class="cross">Без оптимизаций</td>
+                            <td class="check">Продвинутая</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="tech-stack" id="tech">
+        <div class="container">
+            <div class="section-title">
+                <h2>Технологический стек</h2>
+                <p>Современные инструменты, используемые в проекте</p>
+            </div>
+            
+            <div class="tech-icons">
+                <div class="tech-icon">
+                    <i class="fab fa-react"></i>
+                    <span>React 18</span>
+                </div>
+                
+                <div class="tech-icon">
+                    <i class="fab fa-js-square"></i>
+                    <span>TypeScript</span>
+                </div>
+                
+                <div class="tech-icon">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Redux Toolkit</span>
+                </div>
+                
+                <div class="tech-icon">
+                    <i class="fas fa-route"></i>
+                    <span>React Router 6</span>
+                </div>
+                
+                <div class="tech-icon">
+                    <i class="fas fa-server"></i>
+                    <span>TMDB API</span>
+                </div>
+                
+                <div class="tech-icon">
+                    <i class="fas fa-vial"></i>
+                    <span>Jest / RTL</span>
+                </div>
+                
+                <div class="tech-icon">
+                    <i class="fab fa-sass"></i>
+                    <span>SCSS Modules</span>
+                </div>
+                
+                <div class="tech-icon">
+                    <i class="fas fa-cube"></i>
+                    <span>Компонентный подход</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="timeline" id="timeline">
+        <div class="container">
+            <div class="section-title">
+                <h2>Этапы разработки</h2>
+                <p>План реализации учебного проекта</p>
+            </div>
+            
+            <div class="timeline-container">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">Неделя 1-2</div>
+                        <h3>Настройка проекта и базовые компоненты</h3>
+                        <p>Инициализация React + TypeScript, настройка Redux Toolkit и React Router. Создание основных компонентов: шапка, подвал, карточка фильма.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">Неделя 3-4</div>
+                        <h3>Работа с API и главная страница</h3>
+                        <p>Интеграция с TMDB API, создание сервисов для запросов. Разработка главной страницы с сеткой фильмов и базовой пагинацией.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">Неделя 5-6</div>
+                        <h3>Система поиска и фильтрации</h3>
+                        <p>Реализация поиска по названию и фильтрации по жанрам. Добавление debouncing для поисковых запросов и синхронизация с URL.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">Неделя 7-8</div>
+                        <h3>Детали фильма и избранное</h3>
+                        <p>Создание страницы с детальной информацией о фильме. Реализация функционала избранного с сохранением в localStorage.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">Неделя 9-10</div>
+                        <h3>Адаптивный дизайн и оптимизация</h3>
+                        <p>Адаптивная верстка для мобильных устройств. Оптимизация производительности: lazy loading, кэширование изображений.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">Неделя 11-12</div>
+                        <h3>Тестирование и документация</h3>
+                        <p>Написание unit-тестов для критических компонентов и логики. Создание README с инструкциями по запуску и описанием архитектуры.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <h2>Готовы изучить проект?</h2>
+            <p>Исходный код MovieCatalog доступен на GitHub. Вы можете изучить реализацию, запустить проект локально или использовать его как основу для своего.</p>
+                <i class="fab fa-github"></i> Открыть на GitHub
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>MovieCatalog</h3>
+                    <p>Проект — современный каталог фильмов на React, демонстрирующий лучшие практики фронтенд-разработки.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Технические проблемы</h3>
+                    <ul class="footer-links">
+                        <li><a href="#problems">Управление состоянием</a></li>
+                        <li><a href="#problems">Оптимизация производительности</a></li>
+                        <li><a href="#problems">Адаптивная верстка</a></li>
+                        <li><a href="#problems">Работа с API</a></li>
+                        <li><a href="#problems">Качество кода</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Решения</h3>
+                    <ul class="footer-links">
+                        <li><a href="#advantages">Redux Toolkit</a></li>
+                        <li><a href="#advantages">TypeScript</a></li>
+                        <li><a href="#advantages">Модульный CSS</a></li>
+                        <li><a href="#advantages">Оптимизация запросов</a></li>
+                        <li><a href="#advantages">Чистая архитектура</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Основные функции</h3>
+                    <ul class="footer-links">
+                        <li><a href="#features">Главная страница</a></li>
+                        <li><a href="#features">Поиск и фильтрация</a></li>
+                        <li><a href="#features">Избранное</a></li>
+                        <li><a href="#features">Детали фильма</a></li>
+                        <li><a href="#features">Адаптивный дизайн</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2025 MovieCatalog. Учебный проект.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+        
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('.nav-links').classList.remove('active');
+            });
+        });
+        
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+            } else {
+                header.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
+            }
+        });
+        
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        const animatedElements = document.querySelectorAll('.timeline-item, .feature-card, .problem-card, .advantage-card, .scenario-card');
+        animatedElements.forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+            item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            item.style.transitionDelay = `${index * 0.1}s`;
+            observer.observe(item);
+        });
+        
+        window.addEventListener('load', () => {
+            animatedElements.forEach(item => {
+                const rect = item.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }
+            });
+            
+            const tableRows = document.querySelectorAll('tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = 'rgba(99, 102, 241, 0.05)';
+                });
+                row.addEventListener('mouseleave', function() {
+                    if (Array.from(tableRows).indexOf(this) % 2 === 0) {
+                        this.style.backgroundColor = 'var(--light-gray)';
+                    } else {
+                        this.style.backgroundColor = 'white';
+                    }
+                });
+            });
+            
+            const scenarioSteps = document.querySelectorAll('.scenario-step');
+            scenarioSteps.forEach(step => {
+                step.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateX(10px)';
+                });
+                step.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateX(0)';
+                });
+            });
+        });
+        
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-links a');
+        
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+        
+        const style = document.createElement('style');
+        style.textContent = `
+            .nav-links a.active {
+                color: var(--primary-color) !important;
+                font-weight: 600;
+                position: relative;
+            }
+            .nav-links a.active:after {
+                content: '';
+                position: absolute;
+                bottom: -5px;
+                left: 0;
+                width: 100%;
+                height: 2px;
+                background-color: var(--primary-color);
+                border-radius: 1px;
+            }
+            .check:before {
+                content: '✓ ';
+            }
+            .cross:before {
+                content: '✗ ';
+            }
+            .scenario-step {
+                transition: transform 0.3s ease;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
